@@ -7,7 +7,7 @@ import serial
 import os
 import signal
 
-SERVER_IP = "10.0.1.32"
+SERVER_IP = "telepresence.precisit.com"
 uart_port = serial.Serial("/dev/ttyAMA0", baudrate=115200, timeout=0.2 )
 
 class MyClient(TornadoWebSocketClient):
@@ -30,6 +30,6 @@ class MyClient(TornadoWebSocketClient):
 
 if __name__ == '__main__':
 	
-	ws = MyClient('ws://'+ SERVER_IP +':8888/ws')#, protocols=['http-only', 'chat'])
+	ws = MyClient('ws://'+ SERVER_IP +':5099/ws')
 	ws.connect()
 	ioloop.IOLoop.instance().start()

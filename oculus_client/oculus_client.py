@@ -81,7 +81,7 @@ class MyClient(TornadoWebSocketClient):
 
 if __name__ == '__main__':
     global ws
-    ws = MyClient('ws://10.0.1.32:8888/ws')
+    ws = MyClient('ws://telepresence.precisit.com:5099/ws')
     global queue
     queue = Queue()
     tracking_process = Process(target=oculus_tracking, args=(queue,))
