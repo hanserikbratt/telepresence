@@ -50,6 +50,7 @@ class SocketHandler(websocket.WebSocketHandler):
         if message in EXPECTED_CLIENTS:
             self.name = message
             cName[message] = self
+            print "### connected to " +  message + " ###"
             if "oculus_client" in cName:
                 if "rasp_main" in cName:
                     cName["rasp_main"].write_message("start_stream")
