@@ -1,4 +1,5 @@
 from ws4py.client.tornadoclient import TornadoWebSocketClient
+import ws4py.messaging 
 from tornado import ioloop
 #import picamera
 import subprocess
@@ -69,7 +70,8 @@ class MyClient(TornadoWebSocketClient):
      def received_message(self, m):
         global player
         global queue
-        player.stdin.write(m.data)
+        if isinstance(m,ws4py.messaging.BinaryMessage):
+            player.stdin.write(m.data)
         if not queue.empty():
             self.send(queue.get())
 
