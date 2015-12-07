@@ -88,5 +88,5 @@ if __name__ == '__main__':
     tcpserver1.listen(5000)
     #tcpserver1.start(0)  # Forks multiple sub-processes
     print " Camera server Running on 5000"
-    app.listen(8888)
+    app.listen(5099)
     ioloop.IOLoop.instance().start()
