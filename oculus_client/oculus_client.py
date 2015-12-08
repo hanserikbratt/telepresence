@@ -60,29 +60,24 @@ def sendws(message):
 
 class MyClient(TornadoWebSocketClient):
      def opened(self):
-        global playerleft
-        global playerright
+        global player
+        #global playerright
         cmdlineleft = ['mplayer-svn-37552\mplayer', '-noborder', '-vf', 'expand=1200:::::8/9', '-geometry', '960x1200+0+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-framedrop', '-nosound', '-']
-        cmdlineright = ['mplayer-svn-37552\mplayer', '-noborder', '-vf', 'expand=1920:960', '-geometry', '1920x960+0+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-framedrop', '-nosound', '-']
-        self.send("oculus_client")
+        #cmdlineright = ['mplayer-svn-37552\mplayer', '-noborder', '-vf', 'expand=1920:960', '-geometry', '1920x960+0+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-framedrop', '-nosound', '-']
+        self.send("oculus_client_main")
         #cmdline = ['mplayer', '-noborder', '-vf', 'expand=1200:::::8/9', '-geometry', '960x1200+0+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-']
-        playerleft = subprocess.Popen(cmdlineleft, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-        playerright = subprocess.Popen(cmdlineright, stdin=subprocess.PIPE)
+        player = subprocess.Popen(cmdlineleft, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+        #playerright = subprocess.Popen(cmdlineright, stdin=subprocess.PIPE)
         print "### opened ###"
     	#self.close(reason="Close because end of loop")
 
      def received_message(self, m):
-        global playerleft
-        global playerright
+        global player
+        #global playerright
         global queue
-        global leftEye
+        #global leftEye
         if isinstance(m,ws4py.messaging.BinaryMessage):
-            if leftEye:
-                playerleft.stdin.write(m.data)
-            else:
-                playerright.stdin.write(m.data)
-        else:
-            leftEye = m.data == "rasp_sec"
+            player.stdin.write(m.data)
 
         if not queue.empty():
             self.send(queue.get())
