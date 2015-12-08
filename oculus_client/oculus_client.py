@@ -60,20 +60,27 @@ def sendws(message):
 
 class MyClient(TornadoWebSocketClient):
      def opened(self):
-        cmdline = ['mplayer-svn-37552\mplayer', '-noborder', '-vf', 'expand=1200:::::8/9', '-geometry', '960x1200+0+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-framedrop', '-nosound', '-']
-        global player
+        global playerleft
+        global playerright
+        cmdlineleft = ['mplayer-svn-37552\mplayer', '-noborder', '-vf', 'expand=1200:::::8/9', '-geometry', '960x1200+0+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-framedrop', '-nosound', '-']
+        cmdlineright = ['mplayer-svn-37552\mplayer', '-noborder', '-vf', 'expand=1920:960', '-geometry', '1920x960+0+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-framedrop', '-nosound', '-']
         self.send("oculus_client")
         #cmdline = ['mplayer', '-noborder', '-vf', 'expand=1200:::::8/9', '-geometry', '960x1200+0+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-']
-        player = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+        playerleft = subprocess.Popen(cmdlineleft, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+        playerright = subprocess.Popen(cmdlineright, stdin=subprocess.PIPE)
         print "### opened ###"
     	#self.close(reason="Close because end of loop")
 
      def received_message(self, m):
-        global player
+        global playerleft
+        global playerright
         global queue
         global leftEye
         if isinstance(m,ws4py.messaging.BinaryMessage):
-            player.stdin.write(m.data)
+            if leftEye:
+                playerleft.stdin.write(m.data)
+            else:
+                playerright.stdin.write(m.data)
         else:
             leftEye = m.data == "rasp_sec"
 
@@ -81,7 +88,6 @@ class MyClient(TornadoWebSocketClient):
             self.send(queue.get())
 
      def closed(self, code, reason=None):
-        global player
         print "### closed ###"
      	print reason
      	ioloop.IOLoop.instance().stop()
