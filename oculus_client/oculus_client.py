@@ -8,6 +8,7 @@ import ovr
 import math
 import sys
 import os
+import ujson
 from multiprocessing import Process, Queue
 
 
@@ -70,8 +71,12 @@ class MyClient(TornadoWebSocketClient):
      def received_message(self, m):
         global player
         global queue
+        global leftEye
         if isinstance(m,ws4py.messaging.BinaryMessage):
             player.stdin.write(m.data)
+        else:
+            leftEye = m.data == "rasp_sec"
+
         if not queue.empty():
             self.send(queue.get())
 

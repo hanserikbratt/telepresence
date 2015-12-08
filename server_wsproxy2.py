@@ -18,7 +18,12 @@ theTime = time.time()
 
 class IncomingStreamHandler(TCPServer):
     """TCP server for handling incoming connections from cameras"""
+
+    def set_wsclient(wsName):
+        self.wsName = wsName
+
     def on_chunk(self, chunk):
+        cName["oculus_client"].write_message(self.wsName)
         cName["oculus_client"].write_message(chunk, binary=True)
     
     def on_close(self, res):
@@ -32,8 +37,7 @@ class IncomingStreamHandler(TCPServer):
             stream.read_until_close(self.on_close, self.on_chunk)
         else:
             raise Exception("Nowhere to send incoming video stream")
-            if "rasp_sec" in cName:
-                cl[cName.index("rasp_sec")].write_message("stop_stream")
+            cName[self.wsName)].write_message("stop_stream")
             stream.close()
 
 class SocketHandler(websocket.WebSocketHandler):
@@ -86,8 +90,13 @@ app = web.Application([
 
 if __name__ == '__main__':
     tcpserver1 = IncomingStreamHandler()
+    tcpserver1.set_wsclient("rasp_main")
     tcpserver1.listen(5000)
-    #tcpserver1.start(0)  # Forks multiple sub-processes
     print " Camera server Running on 5000"
+    tcpserver2 = IncomingStreamHandler()
+    tcpserver2.set_wsclient("rasp_sec")
+    tcpserver2.listen(5001)
+    print " Camera server Running on 5001"
+    #tcpserver1.start(0)  # Forks multiple sub-processes
     app.listen(5099)
     ioloop.IOLoop.instance().start()
