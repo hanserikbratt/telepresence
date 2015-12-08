@@ -19,11 +19,11 @@ theTime = time.time()
 class IncomingStreamHandler(TCPServer):
     """TCP server for handling incoming connections from cameras"""
 
-    def set_clients(self, camName):
+    def set_clients(self, camName, wsName):
         self.camName = camName
         self.wsName = wsName
 
-    def on_chunk(self, chunk):, wsName
+    def on_chunk(self, chunk):
         cName[self.wsName].write_message(chunk, binary=True)
     
     def on_close(self, res):
@@ -55,9 +55,9 @@ class SocketHandler(websocket.WebSocketHandler):
             self.name = message
             cName[message] = self
             print "### connected to " +  message + " ###"
-            if "oculus_client_main" in cName and "rasp_main" in cName:
+            if (self.name == "oculus_client_main" and "rasp_main" in cName) or (self.name == "rasp_main" and "oculus_client_main" in cName):
                 cName["rasp_main"].write_message("start_stream")
-            if "oculus_client_sec" in cName and "rasp_sec" in cName:
+            if (self.name == "oculus_client_sec" and "rasp_sec" in cName) or (self.name == "rasp_sec" and "oculus_client_sec" in cName):
                 cName["rasp_sec"].write_message("start_stream")
             elif "tracking_client" in cName:
                 if "rasp_main" in cName:
@@ -72,9 +72,9 @@ class SocketHandler(websocket.WebSocketHandler):
 
     def on_close(self):
         if self.name in EXPECTED_CLIENTS:
-            if "oculus_client_main" in cName and "rasp_main" in cName:
+            if self.name=="oculus_client_main" and "rasp_main" in cName:
                 cName["rasp_main"].write_message("stop_stream")
-            if "oculus_client_sec" in cName and "rasp_sec" in cName:
+            if self.name == "oculus_client_sec" and "rasp_sec" in cName:
                 cName["rasp_sec"].write_message("stop_stream")
             del cName[self.name]
             print "### closing to " + self.name +  " ###"
@@ -88,11 +88,11 @@ app = web.Application([
 
 if __name__ == '__main__':
     tcpserver1 = IncomingStreamHandler()
-    tcpserver1.set_clients("rasp_main")
+    tcpserver1.set_clients("rasp_main", "oculus_client_main")
     tcpserver1.listen(5000)
     print " Camera server Running on 5000"
     tcpserver2 = IncomingStreamHandler()
-    tcpserver2.set_clients("rasp_sec")
+    tcpserver2.set_clients("rasp_sec", "oculus_client_sec")
     tcpserver2.listen(5001)
     print " Camera server Running on 5001"
     #tcpserver1.start(0)  # Forks multiple sub-processes
