@@ -19,7 +19,7 @@ theTime = time.time()
 class IncomingStreamHandler(TCPServer):
     """TCP server for handling incoming connections from cameras"""
 
-    def set_wsclient(wsName):
+    def set_wsclient(self, wsName):
         self.wsName = wsName
 
     def on_chunk(self, chunk):
@@ -37,7 +37,7 @@ class IncomingStreamHandler(TCPServer):
             stream.read_until_close(self.on_close, self.on_chunk)
         else:
             raise Exception("Nowhere to send incoming video stream")
-            cName[self.wsName)].write_message("stop_stream")
+            cName[self.wsName].write_message("stop_stream")
             stream.close()
 
 class SocketHandler(websocket.WebSocketHandler):
