@@ -82,15 +82,15 @@ def runLocal():
 
  # Run mode
 def runGlobal():
-        global client1proc, client2proc
+        global subproc1, subproc2
         # Setting button states.
         stereobuttonlocal['state']=DISABLED
         stereobuttonglobal['state']=DISABLED
         trackingbutton['state']=DISABLED
         endbutton['state']=NORMAL
 
-        client1proc = subprocess.Popen('python oculus_client.py')
-        client2proc = subprocess.Popen('python oculus_client2.py')
+        subproc1 = subprocess.Popen('python oculus_client.py')
+        subproc2 = subprocess.Popen('python oculus_client2.py')
 
         
         #time.sleep(10)                                                          # HUD alive time
@@ -103,9 +103,13 @@ def tracking():
         stereobuttonlocal['state']=DISABLED
         stereobuttonglobal['state']=DISABLED
         trackingbutton['state']=DISABLED
+        endbutton['state'] = DISABLED
+        quitbutton['state'] = DISABLED
         mainproc = subprocess.Popen('python main_client_tracking.py '+ip.get())
         subproc1 = subprocess.Popen('python server_camerastream5000.py')
         time.sleep(20)
+        endbutton['state'] = NORMAL
+        quitbutton['state'] = NORMAL
         end()
 
 # End current video stream
@@ -115,20 +119,20 @@ def end():
         trackingbutton['state']=NORMAL
         endbutton['state']=DISABLED
 
-        client1proc.kill()
-        client2proc.kill()
-        subproc2.kill()
-        subproc1.kill()
-        mainproc.kill()
+        try:
+                mainproc.kill()
+        finally:
+                subproc1.kill()
+                subproc2.kill()
                                 
 # End video and also close GUI           
 def endgui():
         try:
-                client2proc.kill()
-                client1proc.kill()
-                mainproc.kill()
-                subproc1.kill()
-                subproc2.kill()
+                try:        
+                        mainproc.kill()
+                finally:
+                        subproc1.kill()
+                        subproc2.kill()
         except:
                 None
         finally:
