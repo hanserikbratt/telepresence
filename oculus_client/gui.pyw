@@ -63,10 +63,11 @@ bottom.lift()
 bottom.wm_attributes("-topmost", True)
 
 # Run mode
-def run():
+def runLocal():
         global mainproc, subproc1, subproc2
         # Setting button states.
-        stereobutton['state']=DISABLED
+        stereobuttonlocal['state']=DISABLED
+        stereobuttonglobal['state']=DISABLED
         trackingbutton['state']=DISABLED
         endbutton['state']=NORMAL
 
@@ -78,10 +79,30 @@ def run():
         #leftHUD.destroy()
         #rightHUD.destroy()
         
+
+ # Run mode
+def runGlobal():
+        global client1proc, client2proc, Global
+        Global = True
+        # Setting button states.
+        stereobuttonlocal['state']=DISABLED
+        stereobuttonglobal['state']=DISABLED
+        trackingbutton['state']=DISABLED
+        endbutton['state']=NORMAL
+
+        client1proc = subprocess.Popen('python oculus_client.py ')
+        client2proc = subprocess.Popen('python oculus_client2.py ')
+
+        
+        #time.sleep(10)                                                          # HUD alive time
+        #leftHUD.destroy()
+        #rightHUD.destroy()
+               
 # Tracking mode
 def tracking():
         global mainproc, subproc1
-        stereobutton['state']=DISABLED
+        stereobuttonlocal['state']=DISABLED
+        stereobuttonglobal['state']=DISABLED
         trackingbutton['state']=DISABLED
         mainproc = subprocess.Popen('python main_client_tracking.py '+ip.get())
         subproc1 = subprocess.Popen('python server_camerastream5000.py')
@@ -90,20 +111,31 @@ def tracking():
 
 # End current video stream
 def end():
-        stereobutton['state']=NORMAL
+        stereobuttonlocal['state']=NORMAL
+        stereobuttonglobal['state']=NORMAL
         trackingbutton['state']=NORMAL
         endbutton['state']=DISABLED
-        try:
-                subproc2.kill()
-        except:
-                None
-        finally:
-                subproc1.kill()
-                mainproc.kill()
+        #if Global:
+         #       Global = False
+          #      client1proc.kill()
+           #     client2proc.kill()
+
+        else:
+                try:
+                        subproc2.kill()
+                        client2proc.kill()
+                        client1proc.kill()
+                except:
+                        None
+                finally:
+                        subproc1.kill()
+                        mainproc.kill()
                                 
 # End video and also close GUI           
 def endgui():
         try:
+                client2proc.kill()
+                client1proc.kill()
                 mainproc.kill()
                 subproc1.kill()
                 subproc2.kill()
@@ -119,8 +151,8 @@ def endgui():
                 #rightHUD.destroy()
 
 # Place buttons
-stereobutton = Button(root, highlightthickness=0, text="Run", fg="black", command = run)
-stereobutton.place(x=100, y=18)
+stereobuttonlocal = Button(root, highlightthickness=0, text="Run local", fg="black", command = runLocal)
+stereobuttonlocal.place(x=100, y=18)
 
 trackingbutton = Button(root, highlightthickness=0, text="Track", fg="black", command = tracking)
 trackingbutton.place(x=200, y=18)
@@ -130,6 +162,10 @@ endbutton.place(x=300, y=18)
 
 quitbutton = Button(root, highlightthickness=0, text="Quit GUI", fg="black", command = endgui)
 quitbutton.place(x=400, y=18)
+
+stereobuttonglobal = Button(root, highlightthickness=0, text="Run global", fg="black", command = runGlobal)
+stereobuttonglobal.place(x=1400, y=18)
+
 
 # Place IP entry field
 iplabel = Label(root, text="IP to main RPI")

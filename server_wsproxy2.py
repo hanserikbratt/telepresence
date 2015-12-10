@@ -9,12 +9,10 @@ import os
 import signal
 #import socket
 
-SERVER_IP = "10.0.1.32"
-EXPECTED_CLIENTS = ("rasp_main", "rasp_sec", "oculus_client_main","oculus_client_sec", "tracking")
+
+EXPECTED_CLIENTS = ("rasp_main", "rasp_sec", "oculus_client_main","oculus_client_sec", "tracking_client")
 cl = []
 cName = {}
-theTime = time.time()
-
 
 class IncomingStreamHandler(TCPServer):
     """TCP server for handling incoming connections from cameras"""
@@ -30,9 +28,7 @@ class IncomingStreamHandler(TCPServer):
         print "res\n", res
 
     def handle_stream(self, stream, address):
-        """Called when new IOStream object is ready for usage
-        logging.info('Incoming connection from %r', address)
-        PlayerConnection(stream, address, server=self)"""
+        """Called when new IOStream object is ready for usage"""
         if self.wsName in cName:
             stream.read_until_close(self.on_close, self.on_chunk)
         else:
@@ -45,7 +41,6 @@ class SocketHandler(websocket.WebSocketHandler):
         return True
 
     def open(self):
-    	#global player
         self.name = ""
         if self not in cl:
             cl.append(self)
@@ -72,6 +67,7 @@ class SocketHandler(websocket.WebSocketHandler):
 
     def on_close(self):
         if self.name in EXPECTED_CLIENTS:
+            print self.name
             if self.name=="oculus_client_main" and "rasp_main" in cName:
                 cName["rasp_main"].write_message("stop_stream")
             if self.name == "oculus_client_sec" and "rasp_sec" in cName:
@@ -95,6 +91,5 @@ if __name__ == '__main__':
     tcpserver2.set_clients("rasp_sec", "oculus_client_sec")
     tcpserver2.listen(5001)
     print " Camera server Running on 5001"
-    #tcpserver1.start(0)  # Forks multiple sub-processes
     app.listen(5099)
     ioloop.IOLoop.instance().start()
