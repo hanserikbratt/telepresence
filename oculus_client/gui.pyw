@@ -82,16 +82,15 @@ def runLocal():
 
  # Run mode
 def runGlobal():
-        global client1proc, client2proc, Global
-        Global = True
+        global client1proc, client2proc
         # Setting button states.
         stereobuttonlocal['state']=DISABLED
         stereobuttonglobal['state']=DISABLED
         trackingbutton['state']=DISABLED
         endbutton['state']=NORMAL
 
-        client1proc = subprocess.Popen('python oculus_client.py ')
-        client2proc = subprocess.Popen('python oculus_client2.py ')
+        client1proc = subprocess.Popen('python oculus_client.py')
+        client2proc = subprocess.Popen('python oculus_client2.py')
 
         
         #time.sleep(10)                                                          # HUD alive time
@@ -106,7 +105,7 @@ def tracking():
         trackingbutton['state']=DISABLED
         mainproc = subprocess.Popen('python main_client_tracking.py '+ip.get())
         subproc1 = subprocess.Popen('python server_camerastream5000.py')
-        time.sleep(10)
+        time.sleep(20)
         end()
 
 # End current video stream
@@ -115,21 +114,12 @@ def end():
         stereobuttonglobal['state']=NORMAL
         trackingbutton['state']=NORMAL
         endbutton['state']=DISABLED
-        #if Global:
-         #       Global = False
-          #      client1proc.kill()
-           #     client2proc.kill()
 
-        else:
-                try:
-                        subproc2.kill()
-                        client2proc.kill()
-                        client1proc.kill()
-                except:
-                        None
-                finally:
-                        subproc1.kill()
-                        mainproc.kill()
+        client1proc.kill()
+        client2proc.kill()
+        subproc2.kill()
+        subproc1.kill()
+        mainproc.kill()
                                 
 # End video and also close GUI           
 def endgui():
@@ -154,17 +144,17 @@ def endgui():
 stereobuttonlocal = Button(root, highlightthickness=0, text="Run local", fg="black", command = runLocal)
 stereobuttonlocal.place(x=100, y=18)
 
-trackingbutton = Button(root, highlightthickness=0, text="Track", fg="black", command = tracking)
-trackingbutton.place(x=200, y=18)
+trackingbutton = Button(root, highlightthickness=0, text="Track local", fg="black", command = tracking)
+trackingbutton.place(x=300, y=18)
 
 endbutton = Button(root, highlightthickness=0, text="End", state=DISABLED, fg="black", command = end)
-endbutton.place(x=300, y=18)
+endbutton.place(x=400, y=18)
 
 quitbutton = Button(root, highlightthickness=0, text="Quit GUI", fg="black", command = endgui)
-quitbutton.place(x=400, y=18)
+quitbutton.place(x=1800, y=18)
 
 stereobuttonglobal = Button(root, highlightthickness=0, text="Run global", fg="black", command = runGlobal)
-stereobuttonglobal.place(x=1400, y=18)
+stereobuttonglobal.place(x=200, y=18)
 
 
 # Place IP entry field

@@ -9,27 +9,22 @@ import math
 import sys
 import os
 import ujson
-from multiprocessing import Process, Queue
 
 
-def oculus_tracking(queue):
-    ovr.initialize(None)
-    session, luid = ovr.create()
-    hmdDesc = ovr.getHmdDesc(session)
-    print "Servo client running"
-    # Used for anti-shaking
-    xtemp=0
-    ytemp=0
-    ztemp=0
-
-    # Get tracking state
-    ts  = ovr.getTrackingState(session, ovr.getTimeInSeconds(), True)
-    if ts.StatusFlags & (ovr.Status_OrientationTracked | ovr.Status_PositionTracked):
-        pose = ts.HeadPose
-
-    # Main loop
-    while True:
-        ts  = ovr.getTrackingState(session, ovr.getTimeInSeconds(), True)
+class OculusTracker(object):
+    """docstring for OculusTracker"""
+    def __init__(self):
+        ovr.initialize(None)
+        self.session, luid = ovr.create()
+        hmdDesc = ovr.getHmdDesc(self.session)
+        print "Servo client running"
+        # Used for anti-shaking
+        self.xtemp=0
+        self.ytemp=0
+        self.ztemp=0
+        
+    def get_pos_command(self):
+        ts  = ovr.getTrackingState(self.session, ovr.getTimeInSeconds(), True)
         if ts.StatusFlags & (ovr.Status_OrientationTracked | ovr.Status_PositionTracked):
             pose = ts.HeadPose
         
@@ -43,25 +38,23 @@ def oculus_tracking(queue):
         x = int(1500 + 637*math.asin(2*(q0*q1 - q3*q2)))    #pitch
         y = int(1450 - 637*math.atan2(2*(q0*q2 - q1*q3),1-2*(q2*q2+q1*q1))) #yaw
         z = int(1500 + 637*math.asin(2*(q0*q3 + q1*q2)))    #roll
-
-        time.sleep(0.004)
         
+        pos_command = ""
         # Anti-shaking
-        if abs(xtemp-x)>1 or abs(ytemp-y)>1 or abs(ztemp-z)>1:
-                        queue.put(str(x) + "," + str(y) + ","+str(z)+'\n')
-                        sys.stdout.flush()
-                        xtemp = x
-                        ytemp = y
-                        ztemp = z
+        if abs(self.xtemp-x)>1 or abs(self.ytemp-y)>1 or abs(self.ztemp-z)>1:
+            pos_command = (str(x) + "," + str(y) + ","+str(z)+'\n')
+            sys.stdout.flush()
+            self.xtemp = x
+            self.ytemp = y
+            self.ztemp = z
+        return pos_command
 
-def sendws(message):
-    global ws
-    ws.send(message)
 
 class MyClient(TornadoWebSocketClient):
      def opened(self):
         global player
-        cmdlineleft = ['mplayer-svn-37552\mplayer', '-noborder', '-vf', 'expand=1200:::::8/9', '-geometry', '960x1200+0+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-framedrop', '-nosound', '-']
+        self.oculusTracker = OculusTracker()
+        cmdlineleft = ['mplayer-svn-37552\mplayer', '-noborder', '-vf', 'expand=1200:::::8/9', '-geometry', '960x1200+960+64', '-fps', '75', '-cache', '1024', '-vo', 'gl', '-framedrop', '-nosound', '-']
         self.send("oculus_client_main")
         player = subprocess.Popen(cmdlineleft, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
         print "### opened ###"
@@ -72,21 +65,17 @@ class MyClient(TornadoWebSocketClient):
         if isinstance(m,ws4py.messaging.BinaryMessage):
             player.stdin.write(m.data)
 
-        if not queue.empty():
-            self.send(queue.get())
+        pos_command = self.oculusTracker.get_pos_command()
+        if pos_command:
+            self.send(pos_command)
 
      def closed(self, code, reason=None):
-        print "### closed ###"
+        print "### closed because: ###"
      	print reason
      	ioloop.IOLoop.instance().stop()
 
 if __name__ == '__main__':
     global ws
     ws = MyClient('ws://telepresence.precisit.com:5099/ws')
-    global queue
-    queue = Queue()
-    tracking_process = Process(target=oculus_tracking, args=(queue,))
-    tracking_process.start()
-    #tracking_process.join()
     ws.connect()
     ioloop.IOLoop.instance().start()

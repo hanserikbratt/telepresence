@@ -16,6 +16,7 @@ class MyClient(TornadoWebSocketClient):
         ws.send("rasp_main")
 
      def received_message(self, m):
+        print m.data
         if m.data == "start_stream":
             self.pro = subprocess.Popen(['bash', 'camerastream.sh', SERVER_IP], preexec_fn=os.setsid)
         elif m.data =="stop_stream":

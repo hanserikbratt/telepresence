@@ -50,7 +50,7 @@ class MyClient(TornadoWebSocketClient):
 
     # Stopping camera stream subprocess
         elif m.data =="stop_stream":
-                os.killpg(pro.pid, signal.SIGTERM)
+                os.killpg(self.pro.pid, signal.SIGTERM)
 
     def closed(self, code, reason=None):
         print "### closed ###"
