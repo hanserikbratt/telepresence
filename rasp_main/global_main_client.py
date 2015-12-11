@@ -1,11 +1,16 @@
 from ws4py.client.tornadoclient import TornadoWebSocketClient
 from tornado import ioloop
-#import picamera
 import subprocess
 import time
 import serial
 import os
 import signal
+
+"""
+This client handles the websocket connection to the global server from the 
+main raspberry pi. In more detail it listen for commands to stop and start the camerastream 
+and relays messages concerning orientation to the MCU
+"""
 
 SERVER_IP = "telepresence.precisit.com"
 uart_port = serial.Serial("/dev/ttyAMA0", baudrate=115200, timeout=0.2 )
@@ -13,7 +18,7 @@ uart_port = serial.Serial("/dev/ttyAMA0", baudrate=115200, timeout=0.2 )
 class MyClient(TornadoWebSocketClient):
      def opened(self):
         print "### opened ###"
-        ws.send("rasp_main")
+        self.send("rasp_main")
 
      def received_message(self, m):
         print m.data
@@ -27,10 +32,13 @@ class MyClient(TornadoWebSocketClient):
      def closed(self, code, reason=None):
         print "### closed ###"
      	print reason
-     	ioloop.IOLoop.instance().stop()
+        ioloop.IOLoop.instance().stop()
 
-if __name__ == '__main__':
-	
+def main():
+	time.sleep(20)
 	ws = MyClient('ws://'+ SERVER_IP +':5099/ws')
 	ws.connect()
-	ioloop.IOLoop.instance().start()
+	ioloop.IOLoop.instance().start()    		
+
+if __name__ == '__main__':
+	main()

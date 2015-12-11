@@ -1,7 +1,3 @@
-# Websocket client handeling the starting of the camera stream and colortracking
-# on the secondary raspberry pi 2.
-
-# import the necessary packages
 import websocket
 import time
 import subprocess
@@ -9,6 +5,11 @@ import signal
 import os
 import re
 import motioncolor
+
+"""
+Websocket client connecting to the local server and handling the starting of the camera stream and colortracking
+on the secondary raspberry pi .
+"""
 
 def on_message(ws, message):
     global pro

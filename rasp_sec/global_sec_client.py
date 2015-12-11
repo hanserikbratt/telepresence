@@ -1,7 +1,3 @@
-# Websocket client handeling the starting of the camera stream and colortracking
-# on the secondary raspberry pi 2.
-
-# import the necessary packages
 from tornado import ioloop
 from ws4py.client.tornadoclient import TornadoWebSocketClient
 import time
@@ -9,6 +5,13 @@ import subprocess
 import signal
 import os
 import motioncolor
+
+"""
+This client handles the websocket connection to the global server from the 
+secondary raspberry pi. In more detail it listen for commands to stop and start the camerastream, 
+and the tracking procedure
+"""
+
 
 SERVER_IP = "telepresence.precisit.com"
 
@@ -57,7 +60,11 @@ class MyClient(TornadoWebSocketClient):
         print reason
         ioloop.IOLoop.instance().stop()
 
-if __name__ == "__main__":
+def main():
+    time.sleep(20)
     ws = MyClient('ws://'+ SERVER_IP +':5099/ws')
     ws.connect()
     ioloop.IOLoop.instance().start()
+
+if __name__ == "__main__":
+    main()
