@@ -21,8 +21,6 @@ def on_close(ws):
     print "### closed ###"
     ovr.destroy(session)
     ovr.shutdown()
-    #subproc1.kill()
-    #subproc2.kill()
 
 def on_open(ws):
     print "### opened ###"
@@ -33,15 +31,12 @@ def on_open(ws):
     ytemp=0
     ztemp=0
 
-    # Get tracking state
-    ts  = ovr.getTrackingState(session, ovr.getTimeInSeconds(), True)
-    if ts.StatusFlags & (ovr.Status_OrientationTracked | ovr.Status_PositionTracked):
-        pose = ts.HeadPose
-
     # Main loop
     while True:
-        ts  = ovr.getTrackingState(session, ovr.getTimeInSeconds(), True)
-        if ts.StatusFlags & (ovr.Status_OrientationTracked | ovr.Status_PositionTracked):
+        ts  = ovr.getTrackingState(session, ovr.getTimeInSeconds(), \
+            True)
+        if ts.StatusFlags & (ovr.Status_OrientationTracked | 
+            \ovr.Status_PositionTracked):
             pose = ts.HeadPose
         
         # Get queternions
@@ -52,14 +47,16 @@ def on_open(ws):
 
         # Calculate Euler angles
         x = int(1500 + 637*math.asin(2*(q0*q1 - q3*q2)))    #pitch
-        y = int(1450 - 637*math.atan2(2*(q0*q2 - q1*q3),1-2*(q2*q2+q1*q1))) #yaw
+        y = int(1450 - 637*math.atan2(2*(q0*q2 - q1*q3),1 \
+        - 2*(q2*q2 + q1*q1))) #yaw
         z = int(1500 + 637*math.asin(2*(q0*q3 + q1*q2)))    #roll
 
         time.sleep(0.004)
 		
 		# Anti-shaking
         if abs(xtemp-x)>1 or abs(ytemp-y)>1 or abs(ztemp-z)>1:
-                        ws.send(str(x) + "," + str(y) + ","+str(z)+'\n')
+                        ws.send(str(x) + "," + str(y) + "," \
+                            + str(z) + '\n')
                         sys.stdout.flush()
                         xtemp = x
                         ytemp = y

@@ -6,19 +6,22 @@ import os
 import re
 import motioncolor
 
-"""
-Websocket client connecting to the local server and handling the starting of the camera stream and colortracking
-on the secondary raspberry pi .
-"""
+
+#Websocket client connecting to the local server and handling
+#the starting of the camera stream and colortracking
+#on the secondary raspberry pi .
+
 
 def on_message(ws, message):
     global pro
     print message
 
-# Starting camera stream by running a subprocess with the shell script camerastream.sh
+# Starting camera stream by running a subprocess with
+# the shell script camerastream.sh
     if message[0:13] == "start_stream:":
         ip = re.search("start_stream:(.+?)#", message).group(1)
-        pro = subprocess.Popen(['bash', 'camerastream.sh', ip], preexec_fn=os.setsid)
+        pro = subprocess.Popen(['bash', 'camerastream.sh', ip],\
+            preexec_fn=os.setsid)
 
 # Beta implementation of colortracking (running the colortracking 20 seconds)
     elif message == "start_tracking":

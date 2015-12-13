@@ -6,12 +6,11 @@ import signal
 import os
 import motioncolor
 
-"""
-This client handles the websocket connection to the global server from the 
-secondary raspberry pi. In more detail it listen for commands to stop and start the camerastream, 
-and the tracking procedure
-"""
 
+# This client handles the websocket connection to the global server 
+# from the secondary raspberry pi. In more detail it listen for 
+# commands to stop and start the camerastream, # and the tracking 
+# procedure
 
 SERVER_IP = "telepresence.precisit.com"
 
@@ -24,11 +23,15 @@ class MyClient(TornadoWebSocketClient):
     def received_message(self, m):
         print m.data
 
-    # Starting camera stream by running a subprocess with the shell script camerastream.sh
+    # Starting camera stream by running a subprocess with the shell script 
+    # camerastream.sh
         if m.data == "start_stream":
-                self.pro = subprocess.Popen(['bash', 'camerastream.sh', SERVER_IP], preexec_fn=os.setsid)
+                self.pro = subprocess.Popen(['bash', \
+                	'camerastream.sh', SERVER_IP], \
+                	preexec_fn=os.setsid)
 
-    # Beta implementation of colortracking (running the colortracking 20 seconds)
+    # Beta implementation of colortracking (running the 
+    # colortracking 20 seconds)
         elif m.data == "start_tracking":
             xp = 1500
             yp = 1500

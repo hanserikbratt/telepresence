@@ -6,11 +6,12 @@ import serial
 import os
 import signal
 
-"""
-This client handles the websocket connection to the global server from the 
-main raspberry pi. In more detail it listen for commands to stop and start the camerastream 
-and relays messages concerning orientation to the MCU
-"""
+
+#This client handles the websocket connection to the global server
+#from the main raspberry pi. 
+#In more detail it listen for commands to stop and start the camerastream 
+#and relays messages concerning orientation to the MCU
+
 
 SERVER_IP = "telepresence.precisit.com"
 uart_port = serial.Serial("/dev/ttyAMA0", baudrate=115200, timeout=0.2 )
@@ -23,7 +24,8 @@ class MyClient(TornadoWebSocketClient):
      def received_message(self, m):
         print m.data
         if m.data == "start_stream":
-            self.pro = subprocess.Popen(['bash', 'camerastream.sh', SERVER_IP], preexec_fn=os.setsid)
+            self.pro = subprocess.Popen(['bash',\
+                'camerastream.sh', SERVER_IP], preexec_fn=os.setsid)
         elif m.data =="stop_stream":
             os.killpg(self.pro.pid, signal.SIGTERM)
         else:
