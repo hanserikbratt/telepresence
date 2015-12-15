@@ -4,12 +4,12 @@ Source code for the telepresence project. The aim of the project was to control 
 ##Raspberry pi setup
 For setting up one Raspberry Pi you need at least these things:
 
-*A Raspberry pi. (We have been using the Raspberry pi 2)
-*A 8 GB microSD card 
-*Some way of writing to the SD card
-*A router with one ethernet port available
-*An ethernet cable
-*A 5v DC power supply
+* A Raspberry pi. (We have been using the Raspberry pi 2)
+* A 8 GB microSD card 
+* Some way of writing to the SD card
+* A router with one ethernet port available
+* An ethernet cable
+* A 5v DC power supply
 
 Download the [latest version]( http://downloads.raspberrypi.org/raspbian_latest) of the operating system Raspbian. (we used 2015-11-21-raspbian-jessie).
 
