@@ -35,7 +35,8 @@ def getdata():
     frame = imutils.resize(frame, width=320)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
-    # define range of magenta in HSV in which the mask should be constructed
+    # define range of magenta in HSV in which the mask
+    # should be constructed
     lower_magenta = np.array([170,100,50])
     upper_magenta = np.array([180,255,255])
 
@@ -47,6 +48,8 @@ def getdata():
         cx = int(M['m10']/M['m00'])
         cy = int(M['m01']/M['m00'])
     else :
+    # Setting the xp and yp as the deviation
+    # from the center of the picture 
         cx = 160
         cy = 120 
     xp = cx-160

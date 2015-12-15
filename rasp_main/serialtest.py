@@ -1,3 +1,6 @@
+# Script to manualy control the gimbal with the input
+# of position in ms.
+# use: python serialtest.py p y r
 import serial
 import time
 import sys

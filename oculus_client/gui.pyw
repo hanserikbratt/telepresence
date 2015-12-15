@@ -20,7 +20,7 @@ background_label.place(x=0, y=0, relwidth=1, relheight=1)
 root.title("Telepresence")
 root.tk_setPalette(background='#FFFFFF')
 root.geometry('%dx%d+%d+%d' % (screenWidth, 64, 0, 0))
-root.overrideredirect(1)                                                        # Removing borders
+root.overrideredirect(1)        # Remove borders
 root.lift()
 root.wm_attributes("-topmost", True)
 
@@ -28,7 +28,7 @@ root.wm_attributes("-topmost", True)
 background = Tk()
 background.geometry('%dx%d+%d+%d' % (screenWidth, screenHeight, \
         0, 64))
-background.overrideredirect(1)                                                      # Removing borders
+background.overrideredirect(1)  # Remove borders
 background.tk_setPalette(background='#000000')
 
 # Set bottom bar attributes
@@ -36,7 +36,7 @@ bottom = Tk()
 bottom.tk_setPalette(background='#FFFFFF')
 bottom.geometry('%dx%d+%d+%d' % (screenWidth, 56, \
         0, screenHeight - 56))
-bottom.overrideredirect(1)                                                      # Removing borders
+bottom.overrideredirect(1)      # Remove borders
 bottom.lift()
 bottom.wm_attributes("-topmost", True)
 

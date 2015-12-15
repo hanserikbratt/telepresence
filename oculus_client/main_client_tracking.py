@@ -16,7 +16,7 @@ def on_close(ws):
     print "### closed ###"
     ovr.destroy(session)
     ovr.shutdown()
-
+# sending tracking to server and running for an arbitrary time 
 def on_open(ws):
     print "### opened ###"
     ws.send("tracking")

@@ -35,8 +35,8 @@ def on_open(ws):
     while True:
         ts  = ovr.getTrackingState(session, ovr.getTimeInSeconds(), \
             True)
-        if ts.StatusFlags & (ovr.Status_OrientationTracked | 
-            \ovr.Status_PositionTracked):
+        if ts.StatusFlags & (ovr.Status_OrientationTracked | \
+            ovr.Status_PositionTracked):
             pose = ts.HeadPose
         
         # Get queternions
