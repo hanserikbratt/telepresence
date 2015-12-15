@@ -47,23 +47,25 @@ To make the RPi communicate with the MCU one needs to [turn off the UART pins fu
 
 Now we are ready to install dependencies. The Linux tools needed are 
 
-* netcat-traditional
-* python-pip
-* python-serial
+* **netcat-traditional**
+* **python-pip**
+* **python-serial**
 
 install these by typing `sudo apt-get install package-name`
 
 We also need to install some python packages. These are:
 
-* ws4py
-* websocket-client
-* tornado
+* **ws4py**
+* **websocket-client**
+* **tornado**
 
 use the `pip-install` command to install these.
 
 Additional packages are also needed if one wants to implement the colortracking feature. These are described below. If you want to skip the colortracking feature, **comment out the motioncolor import** in **sec_client.py** and **glocal_sec_client.py**.
 
 We also  need to change the IP in some of the scripts. In **global_main_client.py** and **global_sec_client.py** change the server IP to your global server if you are using one. In **sec_client.py** change the server IP to your main RPi IP.
+
+#### Color tracking
 
 ## Server
 The server script **global_server** is tested on a [Amazon EC2 debian server](https://aws.amazon.com/ec2). If you don't want to run the setup globally the following is not required.
@@ -88,8 +90,6 @@ The following ports need to be open:
 * 5099 
 
 To start the server, make sure the script **global_server.py** is located on the server, and run `python global_server.py &`
-#### Color tracking
-
 
 ## PC
 
@@ -131,7 +131,7 @@ Running the local implementation requires:
 
 SSH into the main RPi
 
-run the script **global_main_client.py** if you want a global setup and/or *main_server.py* if you want the local setup.
+run the script **global_main_client.py** if you want a global setup and/or **main_server.py** if you want the local setup.
 
 SSH into the secondary RPi
 
@@ -143,7 +143,7 @@ The global scripts will take some time to connect to the server
 
 run **gui.pyw** on your windows computer connected to the oculus rift.
 
-choose to connect globally or locally, if you choose locally you must also iput the main RPi IP.
+choose to connect globally or locally, if you choose locally you must also input the main RPi IP.
 
 If you dont want to start the RPi scripts manually in the future you can use the linux tool Crontab and add a line starting the global and/or local scripts at startup. To do this SSH into the RPi and type `crontab -e` and press enter. Add a line like the following:
 
