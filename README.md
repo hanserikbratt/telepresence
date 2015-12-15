@@ -7,19 +7,19 @@ The setup is tested on a computer running Windows (tested on Windows 7 and 8.1) 
 
 Softwares needed:
 
-	* **Virtual desktop** (http://www.vrdesktop.net)
-	* **Oculus Rift runtime SDK 0.8.0.0** (https://developer.oculus.com/downloads/)
-	* **MPlayer** (http://sourceforge.net/projects/mplayerwin/)
-	* **Python 2.7** (https://www.python.org/downloads/windows/)
+* **Virtual desktop** (http://www.vrdesktop.net)
+* **Oculus Rift runtime SDK 0.8.0.0** (https://developer.oculus.com/downloads/)
+* **MPlayer** (http://sourceforge.net/projects/mplayerwin/)
+* **Python 2.7** (https://www.python.org/downloads/windows/)
 
 MPlayer needs to be installed in the oculus_client folder with the name **mplayer-svn-37552**, otherwise the scripts will not be able to use it.
 
 Python dependencies:
 
-	* **ovr** *(0.8.3rc0)*
-	* **tornado** *(4.3)*
-	* **websocket-client** *(0.34.0)*
-	* **ws4py** *(0.3.4)*
+* **ovr** *(0.8.3rc0)*
+* **tornado** *(4.3)*
+* **websocket-client** *(0.34.0)*
+* **ws4py** *(0.3.4)*
 
 To install these Python librarys uses '''pip install''' followed by the library name
 
