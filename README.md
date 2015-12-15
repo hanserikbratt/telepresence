@@ -37,7 +37,7 @@ This time navigate to `Enable Camera`, select `Enable`, `Finish` and `Yes` to re
 
 Now you might want to check if the camera is working. The command ` raspistill -o testImage.jpg` takes a picture with the camera and it will be listed in the current folder. 
 
-Now we want to get the source code for this project. The code in the `rasp_main` folder goes in the main RPi, and the the code in the folder`rasp_sec` goes in the secondary RPi. 
+Now we want to get the source code for this project. The code in the **rasp_main** folder goes in the main RPi, and the the code in the folder **rasp_sec** goes in the secondary RPi. 
 
 To be able to stream video, the tool `netcat` will be used. Install this by the commmand `sudo apt-get install netcat-traditional`. 
 
