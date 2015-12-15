@@ -13,7 +13,7 @@ For setting up one Raspberry Pi you need at least these things:
 
 Download the [latest version]( http://downloads.raspberrypi.org/raspbian_latest) of the operating system Raspbian. (we used 2015-11-21-raspbian-jessie).
 
-follow [this](https://www.raspberrypi.org/documentation/installation/installing-images/) guide on how to install a OS to an SD card.
+follow [this](https://www.raspberrypi.org/documentation/installation/installing-images/) guide on how to install an OS to a SD card.
 
 Insert the SD card into your Raspberry Pi, connect an Ethernet cable and power it up by connecting the power supply.
 
@@ -25,7 +25,7 @@ SSH into your RPi by the steps described in [this](https://www.raspberrypi.org/d
 
 When you have succesfully accessed the command line on your RPi it is a good idea to configure the Raspberry Pi by running the command `raspi-config`.
 
-In the configuration screen choose Expand filesystem to ensure that the RPi will use all of the available disk space on you SD-card.
+In the configuration screen choose Expand filesystem to ensure that the RPi will use all of the available disk space on your SD-card.
 
 Once you have rebooted after the filesystem expansion it can be a good idea to run `apt-get update` and `apt-get upgrade` to make sure the RPi has the latest updates.
 
@@ -41,7 +41,7 @@ Now you might want to check if the camera is working. The command ` raspistill -
 
 Now we want to get the source code for this project. The code in the **rasp_main** folder goes in the main RPi, and the the code in the folder **rasp_sec** goes in the secondary RPi. The easiest way to do this is to use git by typing `git clone https://github.com/precisit/telepresence`
 
-The RPi video will be captured into a FIFO buffer. To create a FIFO buffer use the command `mkfifo fifo.500`. Make sure that the buffer file is in the same folder as the source code. For more information about the streaming process, see [this](http://zacharybears.com/low-latency-raspberry-pi-video-streaming/)
+The RPi video will be captured into a FIFO buffer. To create a FIFO buffer use the command `mkfifo fifo.500`. Make sure that the buffer file is in the same folder as the source code. For more information about the streaming process, see [this](http://zacharybears.com/low-latency-raspberry-pi-video-streaming/).
 
 To make the RPi communicate with the MCU one needs to [turn off the UART pins functioning as a serial console](http://www.raspberry-projects.com/pi/pi-operating-systems/raspbian/io-pins-raspbian/uart-pins)
 
@@ -88,6 +88,8 @@ The following ports need to be open:
 * 5099 
 
 To start the server, make sure the script **global_server.py** is located on the server, and run `python global_server.py &`
+#### Color tracking
+
 
 ## PC
 
@@ -129,14 +131,20 @@ Running the local implementation requires:
 
 SSH into the main RPi
 
-run the scripts **global_main_client.py** if you want a global setup and/or *main_server.py* if you want the local setup.
+run the script **global_main_client.py** if you want a global setup and/or *main_server.py* if you want the local setup.
 
 SSH into the secondary RPi
 
-run the scripts **global_sec_client.py** if you want a global setup and/or **sec_client.py** if you want the local setup.
+run the script **global_sec_client.py** if you want a global setup and/or **sec_client.py** if you want the local setup.
 
 SSH into the global server if you want the global setup and start the script **global_server-py**. 
+
+The global scripts will take some time to connect to the server
 
 run **gui.pyw** on your windows computer connected to the oculus rift.
 
 choose to connect globally or locally, if you choose locally you must also iput the main RPi IP.
+
+If you dont want to start the RPi scripts manually in the future you can use the linux tool Crontab and add a line starting the global and/or local scripts at startup. To do this SSH into the RPi and type `crontab -e` and press enter. Add a line like the following:
+
+`@reboot python /home/pi/main_server.py & python /home/pi/global_main_client.py &`
