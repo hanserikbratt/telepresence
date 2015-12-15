@@ -29,28 +29,46 @@ In the configuration screen choose Expand filesystem to ensure that the RPi will
 
 Once you have rebooted after the filesystem expansion it can be a good idea to run `apt-get update` and `apt-get upgrade` to make sure the RPi has the latest updates.
 
-###Camera and streaming
+For setting up another RPi, repeat the process.
 
-After this is done access the configuration screen again by typing `raspi-config` 
+####Setting up for the Source code
+
+After the setup is done access the configuration screen again by typing `raspi-config`.
 
 This time navigate to `Enable Camera`, select `Enable`, `Finish` and `Yes` to reboot
 
 Now you might want to check if the camera is working. The command ` raspistill -o testImage.jpg` takes a picture with the camera and it will be listed in the current folder. 
 
-Now we want to get the source code for this project. The code in the **rasp_main** folder goes in the main RPi, and the the code in the folder **rasp_sec** goes in the secondary RPi. 
-
-To be able to stream video, the tool `netcat` will be used. Install this by the commmand `sudo apt-get install netcat-traditional`. 
+Now we want to get the source code for this project. The code in the **rasp_main** folder goes in the main RPi, and the the code in the folder **rasp_sec** goes in the secondary RPi. The easiest way to do this is to use git by typing `git clone https://github.com/precisit/telepresence`
 
 The RPi video will be captured into a FIFO buffer. To create a FIFO buffer use the command `mkfifo fifo.500`. Make sure that the buffer file is in the same folder as the source code. For more information about the streaming process, see [this](http://zacharybears.com/low-latency-raspberry-pi-video-streaming/)
 
+To make the RPi communicate with the MCU one needs to [turn off the UART pins functioning as a serial console](http://www.raspberry-projects.com/pi/pi-operating-systems/raspbian/io-pins-raspbian/uart-pins)
 
+Now we are ready to install dependencies. The Linux tools needed are 
 
+* netcat-traditional
+* python-pip
+* python-serial
 
+install these by typing `sudo apt-get install package-name`
+
+We also need to install some python packages. These are:
+
+* ws4py
+* websocket-client
+* tornado
+
+use the `pip-install` command to install these.
+
+Additional packages are also needed if one wants to implement the colortracking feature. These are described below. If you want to skip the colortracking feature, **comment out the motioncolor import** in **sec_client.py** and **glocal_sec_client.py**.
+
+We also  need to change the IP in some of the scripts. In **global_main_client.py** and **global_sec_client.py** change the server IP to your global server if you are using one. In **sec_client.py** change the server IP to your main RPi IP.
 
 ## Server
-The server script **global_server** is tested on a [Amazon EC2 debian server](https://aws.amazon.com/ec2). To run the script the following is required.
+The server script **global_server** is tested on a [Amazon EC2 debian server](https://aws.amazon.com/ec2). If you don't want to run the setup globally the following is not required.
 
-Softwares needed:
+Software needed:
 
 * **Python 2.7**
 * **pip 7.1.2** (https://pypi.python.org/pypi/pip)
@@ -69,11 +87,13 @@ The following ports need to be open:
 * 5001
 * 5099 
 
+To start the server, make sure the script **global_server.py** is located on the server, and run `python global_server.py &`
+
 ## PC
 
 The setup is tested on a computer running Windows (tested on Windows 7 and 8.1) and requires a full HD screen. We recommend an Intel Core i5 or equivalently and a nVidia GTX 750 Ti or higher.
 
-Softwares needed:
+Software needed:
 
 * **Virtual desktop** (http://www.vrdesktop.net)
 * **Oculus Rift runtime SDK 0.8.0.0** (https://developer.oculus.com/downloads/)
@@ -81,7 +101,8 @@ Softwares needed:
 * **Python 2.7** (https://www.python.org/downloads/windows/)
 * **pip 7.1.2** (https://pypi.python.org/pypi/pip)
 
-Virtual desktop is uesd to mirror the desktop to the Oculus Rift DK2. The setup is calibrated to use the side-by-side mirroring with distortion (F9 mode).
+Virtual desktop is used to mirror the desktop to the Oculus Rift DK2. The setup is calibrated to use the side-by-side mirroring with distortion (F9 mode).
+
 MPlayer needs to be installed in the **oculus_client** folder with the name **mplayer-svn-37552**, otherwise the scripts will not be able to use it.
 
 Python dependencies:
@@ -96,11 +117,26 @@ To install these Python librarys uses the `pip install` command followed by the 
 ## Other
 The gimbal requires an outlet and two ethernet ports. The Oculus Rift requires one outlet.
 
-To program the MCU running the Arduino Bootloader a Arduino Breadboard is required. Follow [this](https://www.arduino.cc/en/Tutorial/ArduinoToBreadboard) for a tutorial on how to do this.
+To program the MCU running the Arduino Bootloader an Arduino Breadboard is required. Follow [this](https://www.arduino.cc/en/Tutorial/ArduinoToBreadboard) for a tutorial on how to do this.
 
 Running the local implementation requires:
 
 * The PC and the gimbal to be connected to the same network
-* The networks router to have port 22, 5000 and 5001 open
 * Need to know the main Raspbarry Pi´s IP address
 * mer? 
+
+## Deployment
+
+SSH into the main RPi
+
+run the scripts **global_main_client.py** if you want a global setup and/or *main_server.py* if you want the local setup.
+
+SSH into the secondary RPi
+
+run the scripts **global_sec_client.py** if you want a global setup and/or **sec_client.py** if you want the local setup.
+
+SSH into the global server if you want the global setup and start the script **global_server-py**. 
+
+run **gui.pyw** on your windows computer connected to the oculus rift.
+
+choose to connect globally or locally, if you choose locally you must also iput the main RPi IP.

@@ -10,7 +10,7 @@ import motioncolor
 #Websocket client connecting to the local server and handling
 #the starting of the camera stream and colortracking
 #on the secondary raspberry pi .
-
+SERVER_IP = "10.0.1.35"
 
 def on_message(ws, message):
     global pro
@@ -65,7 +65,7 @@ def on_open(ws):
 def main():
     time.sleep(5)
     websocket.enableTrace(True)
-    ws = websocket.WebSocketApp("ws://10.0.1.35:8888/ws",
+    ws = websocket.WebSocketApp("ws://" + SERVER_IP + ":8888/ws",
                             on_message = on_message,
                             on_error = on_error,
                             on_close = on_close)

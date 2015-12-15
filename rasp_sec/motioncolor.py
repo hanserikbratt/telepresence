@@ -3,8 +3,6 @@
 # http://www.linux-projects.org/modules/sections/index.php?op=viewarticle&artid=14
 
 # import the necessary packages
-import argparse
-import datetime
 import imutils
 import time
 import cv2
