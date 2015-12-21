@@ -1,6 +1,15 @@
 # telepresence
 Source code for the telepresence project. The aim of the project was to control a camera gimbal using the Oculus Rift DK2 
 
+##Setup of existing system
+For setting up the prototype on the preinstalled working system, one needs to do a few things:
+
+Firstly, if you want the system to run globally you should follow the steps described in the **Server** section. Also you should see to that the ip adresses in the global scripts is the ip adress for your global server. 
+
+On the RPis both the global scripts and the local ones are setup with crontab to run at startup, all though the global scripts can take some time before connecting. The only thing needed to be done is to plug in the ethernet connections and to connect the power source. **Make sure the power plug is set to 5 Volts!**.
+
+On the Oculus PC, make sure that you have started the Virtual Desktop software and hit F9 to start the SBS mode with distortion if needed. After this, start the **gui.pyw** script and either run it locally or globally. On local mode the IP adress to the main raspberry pi needs to be inserted. This IP adress should be 10.0.1.35 when connected to the office router. Also, make sure that the global server adress is changed in the script if you have chosen to run the server at a different adress.
+
 ##Raspberry pi setup
 For setting up one Raspberry Pi you need at least these things:
 
